@@ -14,6 +14,67 @@ let submissions = [];
 
 // --- CONTENT: SCHOOL SAFE CAPTIONS ---
 const deck = [
+    // --- TECHNOLOGY STRUGGLES ---
+    "When you have 50 tabs open and your computer sounds like a jet engine.",
+    "Forgetting your password immediately after changing it.",
+    "When the teacher says 'turn and talk' but you have no friends in that class.",
+    "Closing the tab just as the page finally loads.",
+    "When you accidentally like a post from 3 years ago.",
+    "Trying to look busy when the teacher walks past your screen.",
+    "When the projector doesn't work and the teacher calls the 'tech expert' student.",
+    "Using your phone under the desk at brightness level 1%.",
+    "When you hear your own voice echoing on the Zoom call.",
+    "Googling the answers and finding a Quizlet with the exact same test.",
+
+    // --- ACADEMIC PAIN ---
+    "When the teacher says 'The test will be easy' and the first question is in a different language.",
+    "Looking at the clock and realizing only 2 minutes have passed.",
+    "When you raise your hand and then forget what you were going to say.",
+    "Getting a 99% and being mad about the one point you missed.",
+    "When the teacher erases the board before you finished copying the notes.",
+    "Pretending to write notes so the teacher doesn't call on you.",
+    "When the syllabus says 'No late work accepted' but you try anyway.",
+    "Using 'thus' and 'furthermore' to sound smart in an essay.",
+    "When you read the instructions after finishing the entire assignment.",
+    "Realizing you have a test next period that you completely forgot about.",
+
+    // --- SOCIAL & HALLWAY ---
+    "When you wave at someone and they weren't waving at you.",
+    "Trying to walk through the hallway when the freshman are blocking the path.",
+    "When you see a fight break out and suddenly everyone is a camera operator.",
+    "The awkward eye contact with a teacher in the hallway.",
+    "When your stomach growls during a silent reading period.",
+    "Trying to unzip your backpack quietly but it sounds like a chainsaw.",
+    "When you drop your metal water bottle in the middle of a lecture.",
+    "Wearing a hoodie when it's 90 degrees outside just for the vibes.",
+    "When you accidentally call the teacher 'Mom'.",
+    "Holding the door for someone who is just a little too far away.",
+
+    // --- LUNCH & FOOD ---
+    "When the vending machine eats your dollar.",
+    "Opening a bag of chips and the whole class turns to look at you.",
+    "When you forget your lunch and have to survive on air.",
+    "Trading the best item in your lunch like it's the stock market.",
+    "When the cafeteria pizza is actually just cardboard with cheese.",
+    "Drinking water like you've been in the desert for 40 days.",
+    "When someone asks 'Can I have a piece of gum?' and you have to hide the pack.",
+    "Trying to eat a crunchy snack while the teacher is talking.",
+    "When you drop your fork and the cafeteria goes silent.",
+    "Rushing to the lunch line to beat the other classes.",
+
+    // --- SPORTS & PE ---
+    "When the gym teacher joins the game and takes it way too seriously.",
+    "Getting hit in the face with a dodgeball.",
+    "Running the mile and questioning your entire existence.",
+    "When you pretend to be injured to get out of gym class.",
+    "Being the last one picked for the team.",
+    "When the PE teacher says 'Just one more lap' for the 5th time.",
+    "Wearing jeans on gym day and regretting everything.",
+    "When you actually score a goal and look around to see if anyone saw it.",
+    "Trying to change in the locker room in 30 seconds flat.",
+    "When the ball gets stuck in the rafters and everyone cheers.",
+
+    // --- UNSORTED ---
     "When the teacher says 'pick a partner' and you look at your best friend.",
     "The face you make when the Wi-Fi disconnects during a test.",
     "When you realize you forgot to hit 'Submit' on the assignment.",
@@ -179,6 +240,7 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
 
 
 
