@@ -48,17 +48,28 @@ const deck = [
 
 // --- CONTENT: RELIABLE MEME IMAGES ---
 const memeImages = [
-    "https://upload.wikimedia.org/wikipedia/en/9/9a/Trollface_non-free.png",
-    "https://upload.wikimedia.org/wikipedia/commons/e/e3/Buddy_christ.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/f/ff/Deep_in_thought.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/3/3b/Paris_Tuileries_Garden_Facepalm_statue.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Gfp-ny-catskills-mountains-view-from-slide-mountain.jpg/640px-Gfp-ny-catskills-mountains-view-from-slide-mountain.jpg", // Nature placeholder
-    "https://upload.wikimedia.org/wikipedia/commons/6/6e/Golde33443.jpg", // Dog
-    "https://upload.wikimedia.org/wikipedia/commons/1/15/Cat_August_2010-4.jpg", // Cat
-    "https://upload.wikimedia.org/wikipedia/commons/9/99/Unimpressed_cat.jpg", // Unimpressed Cat
-    "https://upload.wikimedia.org/wikipedia/commons/7/70/Human-screaming-face.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/402px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
+    "1.jpg",
+    "2.jpg",
+    "3.jpg",
+    "4.jpg",
+    "5.jpg",
+    "6.jpg",
+    "7.jpg",
+    "8.jpg",
+    "9.jpg",
+    "10.jpg",
+    "11.jpg",
+    "12.jpg",
+    "13.jpg",
+    "14.jpg",
+    "15.jpg",
+    "16.jpg",
+    "17.jpg",
+    "18.jpg",
+    "19.jpg",
+    "20.jpg"
 ];
+
 
 io.on('connection', (socket) => {
     console.log('User connected: ' + socket.id);
@@ -153,3 +164,4 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
