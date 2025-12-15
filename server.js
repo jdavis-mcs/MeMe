@@ -116,20 +116,37 @@ io.on('connection', (socket) => {
     });
 
     socket.on('playCard', (cardText) => {
-        // Prevent playing if round hasn't started (no judge)
-        // But for simplicity, we just accept and check length
+        // SECURITY CHECK 1: Has this player already submitted?
+        const alreadyPlayed = submissions.find(s => s.playerId === socket.id);
+        if (alreadyPlayed) {
+            return; // Stop right here. Do not accept a second card.
+        }
+
+        // SECURITY CHECK 2: Is the Judge trying to play?
+        if (players[currentJudgeIndex].id === socket.id) {
+            return; // Judge cannot play a card
+        }
+
+        // --- Logic to Process the Card ---
+        
+        // 1. Add to submissions
         submissions.push({ playerId: socket.id, text: cardText });
 
-        // Remove card from server-side hand and deal new one
+        // 2. Remove card from player's hand & Deal a new one
         let player = players.find(p => p.id === socket.id);
         if (player) {
             const idx = player.hand.indexOf(cardText);
             if (idx > -1) player.hand.splice(idx, 1);
+            
+            // Deal replacement card
             player.hand.push(deck[Math.floor(Math.random() * deck.length)]);
+            
+            // Send new hand back to player (they will see it next round)
             io.to(socket.id).emit('yourHand', player.hand);
         }
 
-        // Logic: If everyone (Player Count - 1 Judge) has played
+        // 3. Check if everyone is done
+        // Logic: Total Players - 1 Judge = Number of cards needed
         if (submissions.length >= players.length - 1) {
             io.emit('revealCards', submissions);
         }
@@ -154,5 +171,6 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
 
 
