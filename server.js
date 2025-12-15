@@ -44,6 +44,21 @@ const deck = [
     "Realizing you've been on mute the whole time you were talking.",
     "When the teacher says 'This will be on the test'.",
     "Thinking it's Friday but it's only Tuesday."
+    "Losing your 1st place streak in Kahoot because of a single misclick.",
+    "When you walk into the wrong classroom and everyone stares at you.",
+    "Trying to make your essay look longer by increasing the font size to 12.1.",
+    "When the smart kid gets a different answer than you.",
+    "The sheer panic of being next in line to read out loud.",
+    "When you open a pack of gum and suddenly everyone is your best friend.",
+    "Submitting the assignment at exactly 11:59 PM.",
+    "When your back hurts from carrying the entire group project.",
+    "Typing furiously on your laptop so it looks like you're working.",
+    "When the teacher says 'Wait, let me tell you a story' and you know class is basically over.",
+    "Coming back from the bathroom and realizing you missed the entire lesson.",
+    "When the teacher can't figure out how to make the audio work on the video.",
+    "Starting a new notebook and writing in your best handwriting for exactly one page.",
+    "Having a full conversation with your friend in the Google Doc comments.",
+    "When you explain an answer and the teacher says 'No', but then the next kid says the same thing and gets it right."
 ];
 
 // --- CONTENT: RELIABLE MEME IMAGES ---
@@ -164,4 +179,5 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
 
