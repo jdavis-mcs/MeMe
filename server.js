@@ -43,7 +43,7 @@ const deck = [
     "When you have to turn your camera on.",
     "Realizing you've been on mute the whole time you were talking.",
     "When the teacher says 'This will be on the test'.",
-    "Thinking it's Friday but it's only Tuesday."
+    "Thinking it's Friday but it's only Tuesday.",
     "Losing your 1st place streak in Kahoot because of a single misclick.",
     "When you walk into the wrong classroom and everyone stares at you.",
     "Trying to make your essay look longer by increasing the font size to 12.1.",
@@ -179,5 +179,6 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
 
 
