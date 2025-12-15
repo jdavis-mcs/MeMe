@@ -74,6 +74,118 @@ const deck = [
     "Trying to change in the locker room in 30 seconds flat.",
     "When the ball gets stuck in the rafters and everyone cheers.",
 
+    // --- GAMING & ESPORTS ---
+    "Blaming the lag when you miss an easy shot.",
+    "When your controller dies in the middle of a boss fight.",
+    "That feeling when you finally beat the level you've been stuck on for 3 days.",
+    "When you carry the whole team and get zero credit.",
+    "Realizing you've been playing for 6 hours and forgot to eat.",
+    "When the game auto-saves right before you die.",
+    "Trying to explain to your mom that you can't pause an online game.",
+    "When you accidentally throw a grenade at your own team.",
+    "Spending 2 hours creating your character just to wear a helmet the whole game.",
+    "When you finally get the loot you wanted and the game crashes.",
+    "The panic of hearing a creeper hiss behind you.",
+    "When someone says 'Ez' after winning by 1 point.",
+    "Trying to play stealthily but alerting every enemy on the map.",
+    "When you rage quit and immediately launch the game again.",
+    "Being the last one alive in Battle Royale and forgetting how to breathe.",
+    "When the healer tries to 1v5 the enemy team.",
+    "Buying a new game and realizing your PC can't run it.",
+    "When you skip the tutorial and have no idea what buttons to press.",
+    "The joy of finding a diamond in Minecraft.",
+    "When you get voted out in Among Us but you were actually doing tasks.",
+
+    // --- COMPUTER SCIENCE & TECH ---
+    "Spending 3 hours fixing a bug that was just a missing semicolon.",
+    "When the code compiles with zero errors on the first try.",
+    "Copying code from Stack Overflow and hoping it works.",
+    "When you forget to save your project and the power goes out.",
+    "Trying to explain to your parents that you aren't hacking, just using Command Prompt.",
+    "When you fix one bug and create 10 new ones.",
+    "The face you make when the teacher says 'Don't use Google'.",
+    "Realizing you've been coding in the wrong file for 20 minutes.",
+    "When the Wi-Fi drops by one bar and you act like the world is ending.",
+    "Closing 50 Chrome tabs and feeling your computer sigh in relief.",
+    "When you accidentally type your password into the username box.",
+    "Trying to find the mouse cursor on a dual-monitor setup.",
+    "When you inspect element and feel like a hacker.",
+    "Waiting for a Windows update that is stuck at 99%.",
+    "When the printer jams 5 minutes before the essay is due.",
+    "Pluging in the USB correctly on the first try.",
+    "When you realize you've been on mute for the entire presentation.",
+    "Deleting a line of code and the whole program explodes.",
+    "When someone asks 'Can you hack my ex's Instagram?' just because you take CS.",
+    "The satisfaction of peeling the plastic off a new monitor.",
+
+    // --- CLASSROOM CHAOS ---
+    "When the substitute teacher mispronounces everyone's name.",
+    "Trying to open a Velcro binder during a quiet test.",
+    "When you make eye contact with your friend while the teacher is yelling.",
+    "The sheer terror of the teacher saying 'I'll wait'.",
+    "When you finish the test and start staring at the wall so you don't look suspicious.",
+    "Realizing you have the same shirt as the teacher.",
+    "When the smart kid asks a question that makes the homework harder.",
+    "Trying to suppress a cough so you don't disrupt the silence.",
+    "When the bell rings and you run out like you're escaping prison.",
+    "Dropping your pencil and watching it roll to the other side of the room.",
+    "When the teacher says 'Get into groups' and you lock eyes with your squad.",
+    "Asking to go to the bathroom just to walk around and stretch your legs.",
+    "When you accidentally call the teacher 'Grandma'.",
+    "The walk of shame when you have to sharpen your pencil in the middle of a lecture.",
+    "When the teacher puts a meme in the PowerPoint and it's from 2012.",
+    "Pretending to look for something in your bag when the teacher asks for a volunteer.",
+    "When you guess 'C' on a multiple choice test and get it right.",
+    "The sound of 30 zippers zipping up at the same time.",
+    "When you write the date as last year for the entire month of January.",
+    "Realizing your headphones weren't plugged in.",
+
+    // --- GROUP PROJECTS ---
+    "When you do 99% of the work and the other person writes the title.",
+    "The awkward silence when no one wants to present first.",
+    "When your group partner says 'I'll do it later' the night before it's due.",
+    "Trying to merge a Google Doc when everyone is typing at once.",
+    "When someone deletes your paragraph by accident.",
+    "Assigning the easiest slide to the person who does nothing.",
+    "When the teacher lets you pick your own groups.",
+    "Having a secret group chat without the one annoying member.",
+    "When you have to present and your partner is absent.",
+    "Pretending to agree with a bad idea just to get the project over with.",
+
+    // --- MORNING & BUS LIFE ---
+    "Waking up and calculating the minimum amount of time you need to get ready.",
+    "When you fall asleep on the bus and wake up in a different zip code.",
+    "Running for the bus and the driver looks you in the eye and drives away.",
+    "When you forget your headphones and have to listen to the bus noise.",
+    "Trying to put on a jacket while wearing a backpack.",
+    "When you realize you forgot your ID badge at home.",
+    "Walking into school and realizing it's Spirit Week and you didn't dress up.",
+    "When the bus hits a bump and you fly three feet in the air.",
+    "Trying to eat breakfast while running to first period.",
+    "When you realize you wore two different shoes.",
+
+    // --- MISC SCHOOL STRUGGLES ---
+    "When the teacher says 'See me after class'.",
+    "Trying to sound smart during a Socratic Seminar.",
+    "When you get a paper cut from a worksheet.",
+    "The joy of a snow day (or an e-learning day where the Wi-Fi is 'down').",
+    "When you have to watch a movie in class but the audio is out of sync.",
+    "Trying to read the whiteboard when the marker is running out of ink.",
+    "When the teacher erases the one thing you hadn't written down yet.",
+    "Realizing you have a hole in your sock during gym class.",
+    "When you walk into a spiderweb in the hallway.",
+    "Trying to explain a meme to a teacher.",
+    "When you get the seat next to the electrical outlet.",
+    "The panic when the teacher starts passing back graded tests.",
+    "When you confidently give an answer and it's completely wrong.",
+    "Trying to open a milk carton without exploding it everywhere.",
+    "When you see a dog on school grounds and everyone loses their minds.",
+    "The feeling of taking off your backpack after a long day.",
+    "When you have to use a hall pass that looks like a literal piece of trash.",
+    "Trying to be quiet in the library but your chair squeaks.",
+    "When the fire alarm goes off during a test and you feel blessed.",
+    "Realizing you have homework on a Sunday night at 10 PM.",
+
     // --- UNSORTED ---
     "When the teacher says 'pick a partner' and you look at your best friend.",
     "The face you make when the Wi-Fi disconnects during a test.",
@@ -143,7 +255,17 @@ const memeImages = [
     "17.jpg",
     "18.jpg",
     "19.jpg",
-    "20.jpg"
+    "20.jpg",
+    "21.jpg",
+    "22.jpg",
+    "23.jpg",
+    "24.jpg",
+    "25.jpg",
+    "26.jpg",
+    "27.jpg",
+    "28.jpg",
+    "29.jpg",
+    "30.jpg"
 ];
 
 
@@ -240,6 +362,7 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
 
 
 
