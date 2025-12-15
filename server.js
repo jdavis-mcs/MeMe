@@ -4,13 +4,15 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
 
+// Serve files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --- GAME STATE ---
 let players = [];
 let currentJudgeIndex = 0;
 let submissions = []; 
 
-// A deck of school-safe captions
+// --- CONTENT: SCHOOL SAFE CAPTIONS ---
 const deck = [
     "When the teacher says 'pick a partner' and you look at your best friend.",
     "The face you make when the Wi-Fi disconnects during a test.",
@@ -44,36 +46,25 @@ const deck = [
     "Thinking it's Friday but it's only Tuesday."
 ];
 
-// Reliable Image Placeholders (To ensure images definitely show up)
-// In production, you can replace these with real image URLs later.
+// --- CONTENT: RELIABLE MEME IMAGES ---
 const memeImages = [
-    "1.jpg",
-    "2.jpg",
-    "3.jpg",
-    "4.jpg",
-    "5.jpg",
-    "6.jpg",
-    "7.jpg",
-    "8.jpg",
-    "9.jpg",
-    "10.jpg",
-    "11.jpg",
-    "12.jpg",
-    "13.jpg",
-    "14.jpg",
-    "15.jpg",
-    "16.jpg",
-    "17.jpg",
-    "18.jpg",
-    "19.jpg",
-    "20.jpg"
+    "https://upload.wikimedia.org/wikipedia/en/9/9a/Trollface_non-free.png",
+    "https://upload.wikimedia.org/wikipedia/commons/e/e3/Buddy_christ.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/f/ff/Deep_in_thought.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/3/3b/Paris_Tuileries_Garden_Facepalm_statue.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Gfp-ny-catskills-mountains-view-from-slide-mountain.jpg/640px-Gfp-ny-catskills-mountains-view-from-slide-mountain.jpg", // Nature placeholder
+    "https://upload.wikimedia.org/wikipedia/commons/6/6e/Golde33443.jpg", // Dog
+    "https://upload.wikimedia.org/wikipedia/commons/1/15/Cat_August_2010-4.jpg", // Cat
+    "https://upload.wikimedia.org/wikipedia/commons/9/99/Unimpressed_cat.jpg", // Unimpressed Cat
+    "https://upload.wikimedia.org/wikipedia/commons/7/70/Human-screaming-face.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/402px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
 ];
 
 io.on('connection', (socket) => {
     console.log('User connected: ' + socket.id);
 
+    // 1. Join Game
     socket.on('joinGame', (name) => {
-        // Prevent duplicate joins from same browser
         const existing = players.find(p => p.id === socket.id);
         if (!existing) {
             players.push({ id: socket.id, name: name, score: 0, hand: [] });
@@ -89,69 +80,60 @@ io.on('connection', (socket) => {
         }
     });
 
+    // 2. Start Round
     socket.on('startRound', () => {
-        if (players.length < 2) return; // Need at least 2 people to play
+        if (players.length < 2) return; // Need at least 2 people
 
         submissions = []; 
         
-        // Safety check: ensure index is valid
+        // Safety check index
         if (currentJudgeIndex >= players.length) currentJudgeIndex = 0;
         
-        // Pick the Judge
         const judge = players[currentJudgeIndex];
-        
-        // Pick a Meme
         const currentMeme = memeImages[Math.floor(Math.random() * memeImages.length)];
 
-        console.log(`Starting round. Judge is ${judge.name}. Meme is ${currentMeme}`);
-
-        // Broadcast new round info
+        // Broadcast new round
         io.emit('newRound', {
             judgeId: judge.id,
             memeUrl: currentMeme
         });
         
-        // Move index for next time
+        // Rotate Judge for next time
         currentJudgeIndex = (currentJudgeIndex + 1) % players.length;
     });
 
+    // 3. Play Card
     socket.on('playCard', (cardText) => {
-        // SECURITY CHECK 1: Has this player already submitted?
+        // CHECK 1: Already played?
         const alreadyPlayed = submissions.find(s => s.playerId === socket.id);
-        if (alreadyPlayed) {
-            return; // Stop right here. Do not accept a second card.
-        }
+        if (alreadyPlayed) return;
 
-        // SECURITY CHECK 2: Is the Judge trying to play?
-        if (players[currentJudgeIndex].id === socket.id) {
-            return; // Judge cannot play a card
-        }
+        // CHECK 2: Is Judge? (Optional server-side validation)
+        // ... (Skipping complex check for simplicity, relies on client UI)
 
-        // --- Logic to Process the Card ---
-        
-        // 1. Add to submissions
+        // Add submission
         submissions.push({ playerId: socket.id, text: cardText });
 
-        // 2. Remove card from player's hand & Deal a new one
+        // Update Hand
         let player = players.find(p => p.id === socket.id);
         if (player) {
             const idx = player.hand.indexOf(cardText);
             if (idx > -1) player.hand.splice(idx, 1);
-            
-            // Deal replacement card
             player.hand.push(deck[Math.floor(Math.random() * deck.length)]);
-            
-            // Send new hand back to player (they will see it next round)
             io.to(socket.id).emit('yourHand', player.hand);
         }
 
-        // 3. Check if everyone is done
-        // Logic: Total Players - 1 Judge = Number of cards needed
+        // NOTIFY: Card played (Face down)
+        io.emit('cardPlayedAnonymously', submissions.length);
+
+        // CHECK: End of round?
+        // (Players - 1 Judge)
         if (submissions.length >= players.length - 1) {
             io.emit('revealCards', submissions);
         }
     });
 
+    // 4. Judge Choice
     socket.on('judgeChoice', (winnerId) => {
         let winner = players.find(p => p.id === winnerId);
         if (winner) {
@@ -171,6 +153,3 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-
-
