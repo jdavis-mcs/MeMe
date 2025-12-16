@@ -4,39 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Table</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Same Table CSS as before */
-        body { font-family: 'Poppins', sans-serif; background: #2c3e50; color: white; margin: 0; padding: 20px; text-align: center; height: 95vh; display: flex; flex-direction: column; }
-        #code-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #34495e; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 999; }
+        :root {
+            --bg-color: #111;
+            --text-color: #fff;
+            --accent: #ff0055;
+            --card-width: 220px;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; padding: 0;
+            overflow: hidden; /* Prevent scrolling */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- UI OVERLAYS --- */
+        #top-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background: rgba(255,255,255,0.05);
+            align-items: center;
+        }
+
+        #room-code-display {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ffd700;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        #status-bar {
+            font-size: 2rem;
+            color: #ccc;
+        }
+
+        /* --- GAME AREA --- */
+        #game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #meme-img {
+            max-height: 40vh;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border: 5px solid white;
+            transition: all 0.5s;
+        }
+
+        #table-area {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: white;
+            color: black;
+            width: var(--card-width);
+            height: calc(var(--card-width) * 1.4);
+            padding: 20px;
+            margin: 10px;
+            border-radius: 15px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            animation: popIn 0.5s ease;
+        }
+
+        .card-facedown {
+            background: #e74c3c;
+            color: transparent;
+            background-image: repeating-linear-gradient(45deg, #c0392b 0, #c0392b 20px, #e74c3c 20px, #e74c3c 40px);
+            border: 5px solid white;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- SIDEBAR SCORES --- */
+        #sidebar {
+            position: absolute;
+            right: 20px;
+            top: 100px;
+            width: 250px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+        #player-list { list-style: none; padding: 0; }
+        #player-list li { 
+            font-size: 1.2rem; margin-bottom: 10px; 
+            display: flex; justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- ENTRY SCREEN --- */
+        #code-screen {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: #1a1a2e;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 100;
+        }
+        input { font-size: 2rem; padding: 10px; text-align: center; text-transform: uppercase; width: 200px; }
+        button { font-size: 1.5rem; padding: 10px 30px; margin-top: 20px; cursor: pointer; }
+        
         .hidden { display: none !important; }
-        /* ... Add rest of previous CSS ... */
-        .card { background: white; color: black; width: 200px; height: 280px; padding: 20px; margin: 15px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; vertical-align: top; }
-        .card-facedown { background: #e74c3c; color: transparent; border: 4px solid white; }
     </style>
 </head>
 <body>
 
     <div id="code-screen">
-        <h1>Spectator View</h1>
-        <input type="text" id="room-code" placeholder="Enter 4-Letter Code" style="font-size: 2rem; text-align: center; text-transform: uppercase; padding: 10px; width: 200px;">
-        <br>
-        <button onclick="joinRoom()" style="padding: 10px 20px; font-size: 1.5rem; cursor: pointer;">Watch Game</button>
+        <h1 style="font-size: 4rem; margin-bottom: 10px;">SPECTATOR MODE</h1>
+        <p>Enter Room Code to Watch</p>
+        <input type="text" id="room-code">
+        <button onclick="joinRoom()">Connect</button>
     </div>
 
     <div id="main-ui" class="hidden">
-        <h1 id="header-code">Room: ????</h1>
-        <h2 id="status-bar">Waiting...</h2>
-        
-        <div style="flex:1; display:flex; justify-content:center; align-items:center;">
-            <img id="meme-img" style="max-height:40vh; max-width:80%; border-radius:10px;">
+        <div id="top-bar">
+            <div id="room-code-display">ROOM: ????</div>
+            <div id="status-bar">Waiting for Round...</div>
         </div>
-        
-        <div id="table-area" style="flex:1; padding:20px;"></div>
-        
-        <div style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.1); padding:15px; border-radius:10px; text-align:left;">
-            <h3>Scores</h3>
-            <ul id="player-list" style="list-style:none; padding:0;"></ul>
+
+        <div id="game-area">
+            <img id="meme-img" src=""> <div id="table-area"></div>
+        </div>
+
+        <div id="sidebar">
+            <h3>🏆 Leaderboard</h3>
+            <ul id="player-list"></ul>
         </div>
     </div>
 
@@ -46,25 +167,28 @@
         
         function joinRoom() {
             const code = document.getElementById('room-code').value;
-            if(code) {
-                socket.emit('joinAsSpectator', code);
-            }
+            if(code) socket.emit('joinAsSpectator', code);
         }
 
         socket.on('spectatorJoined', (code) => {
             document.getElementById('code-screen').classList.add('hidden');
             document.getElementById('main-ui').classList.remove('hidden');
-            document.getElementById('header-code').innerText = "Room: " + code;
+            document.getElementById('room-code-display').innerText = "ROOM: " + code;
         });
 
         socket.on('updatePlayerList', (players) => {
-            document.getElementById('player-list').innerHTML = players.map(p => `<li>${p.score} - ${p.name}</li>`).join('');
+            // Sort by score
+            players.sort((a,b) => b.score - a.score);
+            document.getElementById('player-list').innerHTML = players.map(p => `<li><span>${p.name}</span> <b>${p.score}</b></li>`).join('');
         });
 
         socket.on('newRound', (data) => {
-            document.getElementById('meme-img').src = data.memeUrl;
+            const img = document.getElementById('meme-img');
+            img.src = data.memeUrl;
+            img.style.transform = "scale(1)"; // Reset size
+            
             document.getElementById('table-area').innerHTML = '';
-            document.getElementById('status-bar').innerText = "Thinking...";
+            document.getElementById('status-bar').innerText = "Round in Progress...";
         });
 
         socket.on('cardPlayedAnonymously', (count) => {
@@ -73,24 +197,31 @@
             for(let i=0; i<count; i++) {
                 const c = document.createElement('div');
                 c.className = 'card card-facedown';
+                c.innerText = "?";
                 area.appendChild(c);
             }
         });
 
         socket.on('revealCards', (submissions) => {
             const area = document.getElementById('table-area');
+            const img = document.getElementById('meme-img');
+            
+            // Shrink meme slightly to make room for cards
+            img.style.transform = "scale(0.8)";
+            
             area.innerHTML = '';
+            document.getElementById('status-bar').innerText = "JUDGING TIME!";
+            
             submissions.forEach(sub => {
                 const c = document.createElement('div');
                 c.className = 'card';
                 c.innerText = sub.text;
                 area.appendChild(c);
             });
-            document.getElementById('status-bar').innerText = "Judging...";
         });
 
         socket.on('roundWinner', (name) => {
-            document.getElementById('status-bar').innerText = "Winner: " + name;
+            document.getElementById('status-bar').innerHTML = `WINNER: <span style="color:#ffd700">${name}</span>`;
         });
     </script>
 </body>
