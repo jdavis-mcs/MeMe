@@ -324,8 +324,22 @@ io.on('connection', (socket) => {
         const winner = room.players.find(p => p.id === winnerId);
         if (winner) {
             winner.score += 1;
-            io.to(code).emit('roundWinner', winner.name);
-            io.to(code).emit('updatePlayerList', room.players);
+            
+            // --- NEW: WIN CONDITION CHECK ---
+            if (winner.score >= 5) {
+                // 1. Notify everyone the game is over
+                io.to(code).emit('gameGameOver', winner.name);
+                
+                // 2. Reset everyone's score for the next game
+                room.players.forEach(p => p.score = 0);
+                
+                // 3. Update the list so everyone sees 0 points
+                io.to(code).emit('updatePlayerList', room.players);
+            } else {
+                // Normal Round Win
+                io.to(code).emit('roundWinner', winner.name);
+                io.to(code).emit('updatePlayerList', room.players);
+            }
         }
     });
 
@@ -358,3 +372,4 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
