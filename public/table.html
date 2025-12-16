@@ -223,6 +223,24 @@
         socket.on('roundWinner', (name) => {
             document.getElementById('status-bar').innerHTML = `WINNER: <span style="color:#ffd700">${name}</span>`;
         });
+
+        socket.on('gameGameOver', (winnerName) => {
+            const status = document.getElementById('status-bar');
+            const meme = document.getElementById('meme-img');
+            const table = document.getElementById('table-area');
+
+            // Clear the table
+            table.innerHTML = '';
+            // Hide the meme
+            meme.style.opacity = '0.1';
+            
+            // Big Text
+            status.innerHTML = `
+                <div style="font-size: 4rem; color: #e94560;">GAME OVER</div>
+                <div style="font-size: 6rem; color: #ffd700;">🏆 ${winnerName} 🏆</div>
+                <div style="font-size: 2rem; color: white;">Wins the Game!</div>
+            `;
+        });
     </script>
 </body>
 </html>
