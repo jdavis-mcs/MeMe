@@ -3,68 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classroom Meme Game</title>
+    <title>Meme Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS STYLES --- */
+        /* Keep your existing CSS */
         body { font-family: 'Poppins', sans-serif; background-color: #f0f2f5; padding: 20px; text-align: center; margin: 0; }
         .hidden { display: none !important; }
-        
-        /* Buttons */
         .btn { background: #4a90e2; color: white; border: none; padding: 10px 20px; font-size: 1.2rem; cursor: pointer; border-radius: 5px; margin: 5px; }
-        .btn:hover { background: #357abd; }
-        .btn-start { background: #28a745; font-weight: bold; padding: 15px 30px; font-size: 1.5rem; margin-top: 20px; display: block; margin-left: auto; margin-right: auto;}
-        
-        /* Containers */
+        .btn-start { background: #28a745; font-weight: bold; padding: 15px 30px; margin: 20px auto; display: block; }
         #login-screen, #game-screen { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
-        /* Cards */
-        .card { 
-            background: white; border: 2px solid #ddd; padding: 15px; margin: 10px; border-radius: 8px; 
-            cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-            width: 160px; height: 220px; vertical-align: top; font-size: 0.95rem; user-select: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s;
-        }
+        .card { background: white; border: 2px solid #ddd; padding: 15px; margin: 10px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 160px; height: 220px; vertical-align: top; font-size: 0.95rem; user-select: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .card:hover { transform: translateY(-5px); border-color: #4a90e2; }
-        .card.selected { background-color: #d1e7dd; border-color: #0f5132; transform: scale(1.05); }
-        
-        /* Face Down Card Style */
-        .card-facedown {
-            background: #ccc; color: transparent;
-            background-image: repeating-linear-gradient(45deg, #ccc 0, #ccc 10px, #bbb 10px, #bbb 20px);
-        }
-
-        /* Images & Layout */
+        .card.selected { background-color: #d1e7dd; border-color: #0f5132; }
+        .card-facedown { background: #ccc; color: transparent; background-image: repeating-linear-gradient(45deg, #ccc 0, #ccc 10px, #bbb 10px, #bbb 20px); }
         #meme-display { max-width: 100%; height: 350px; object-fit: contain; background: #333; margin: 20px 0; border-radius: 5px; }
-        #table-area { background: #f8f9fa; padding: 20px; border-radius: 10px; min-height: 150px; margin-bottom: 20px; }
-        #info-bar { font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; display: flex; justify-content: space-between; }
-        #scores { margin-top: 30px; text-align: left; background: #fafafa; padding: 15px; border-radius: 8px; }
-        
-        /* Modal */
         #confirm-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:1000; }
+        
+        /* NEW: Room Code Display */
+        #room-code-display { font-size: 2rem; font-weight: bold; color: #6c5ce7; letter-spacing: 5px; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <h1>Meme Game Class</h1>
-        <p>Enter your name to join:</p>
-        <input type="text" id="username" placeholder="Student Name" style="padding:10px; font-size:1.2rem; width: 60%;">
-        <br><br>
-        <button class="btn" onclick="joinGame()">Join Game</button>
+        <h1>Meme Game</h1>
+        <input type="text" id="username" placeholder="Your Name" style="padding:10px; font-size:1.2rem; width: 60%; display:block; margin: 10px auto;">
+        
+        <hr style="width: 50%; margin: 20px auto;">
+        
+        <div>
+            <input type="text" id="room-code-input" placeholder="Room Code (e.g. ABCD)" style="padding:10px; font-size:1rem; width: 40%; text-transform: uppercase;">
+            <button class="btn" onclick="joinGame()">Join Room</button>
+        </div>
+        
+        <p>— OR —</p>
+        
+        <button class="btn" style="background: #e17055;" onclick="createGame()">Create New Room</button>
+        <p id="error-msg" style="color: red;"></p>
     </div>
 
     <div id="game-screen" class="hidden">
-        
+        <div id="room-code-display">CODE: ????</div>
         <div id="info-bar">
             <span id="role-indicator">Waiting...</span>
-            <span id="round-status"></span>
         </div>
 
-        <button id="start-btn" class="btn btn-start" onclick="startGame()">START GAME</button>
+        <button id="start-btn" class="btn btn-start" onclick="startGame()">START ROUND</button>
 
         <img id="meme-display" class="hidden">
-        
         <h2 id="status-message">Waiting for players...</h2>
 
         <div id="table-area" class="hidden">
@@ -79,17 +65,16 @@
         
         <div id="scores">
             <h3>Scores</h3>
-            <ul id="player-list" style="list-style: none; padding: 0;"></ul>
+            <ul id="player-list"></ul>
         </div>
     </div>
 
     <div id="confirm-modal" class="hidden">
-        <div style="background:white; padding:30px; border-radius:10px; text-align:center; max-width:400px; width: 90%;">
+        <div style="background:white; padding:30px; border-radius:10px; text-align:center; max-width:400px; width:90%;">
             <h3>Confirm Card</h3>
-            <p>Play this card?</p>
-            <div id="selected-card-text" style="background:#eee; padding:15px; margin:15px 0; font-style:italic; border-radius:5px; font-weight: bold;">...</div>
+            <div id="selected-card-text" style="background:#eee; padding:15px; margin:15px 0; font-weight:bold;">...</div>
             <button class="btn" style="background:#dc3545;" onclick="closeModal()">Cancel</button>
-            <button class="btn" style="background:#28a745;" onclick="confirmPlayCard()">Yes, Play It!</button>
+            <button class="btn" style="background:#28a745;" onclick="confirmPlayCard()">Play It!</button>
         </div>
     </div>
 
@@ -105,72 +90,48 @@
         const gameScreen = document.getElementById('game-screen');
         const startBtn = document.getElementById('start-btn');
         const memeDisplay = document.getElementById('meme-display');
-        const tableArea = document.getElementById('table-area');
         const tableCards = document.getElementById('table-cards');
-        const handContainer = document.getElementById('hand-container');
         const myHand = document.getElementById('my-hand');
         const statusMsg = document.getElementById('status-message');
         const roleInd = document.getElementById('role-indicator');
         const modal = document.getElementById('confirm-modal');
+        const roomDisplay = document.getElementById('room-code-display');
 
-        // --- FUNCTIONS ---
+        function createGame() {
+            const name = document.getElementById('username').value;
+            if(!name) return alert("Enter name first!");
+            socket.emit('createGame', name);
+        }
+
         function joinGame() {
             const name = document.getElementById('username').value;
-            if(name) {
-                socket.emit('joinGame', name);
-                loginScreen.classList.add('hidden');
-                gameScreen.classList.remove('hidden');
-            }
+            const code = document.getElementById('room-code-input').value;
+            if(!name || !code) return alert("Enter Name and Code!");
+            socket.emit('joinGame', { name, code });
         }
 
-        function startGame() {
-            socket.emit('startRound');
-        }
-
-        function closeModal() {
-            modal.classList.add('hidden');
-            tempCardText = "";
-        }
-
+        function startGame() { socket.emit('startRound'); }
+        function closeModal() { modal.classList.add('hidden'); }
         function confirmPlayCard() {
             if (tempCardText) {
                 socket.emit('playCard', tempCardText);
-                statusMsg.innerText = "Card Submitted! Waiting for others...";
-                myHand.innerHTML = ''; // Clear hand locally immediately
+                statusMsg.innerText = "Submitted! Waiting...";
+                myHand.innerHTML = ''; 
                 closeModal();
             }
         }
 
-        // --- SOCKET EVENTS ---
         socket.on('connect', () => { myId = socket.id; });
+        socket.on('errorMsg', (msg) => { alert(msg); });
 
-        socket.on('updatePlayerList', (players) => {
-            const list = document.getElementById('player-list');
-            list.innerHTML = players.map(p => `<li><b>${p.name}</b>: ${p.score} pts</li>`).join('');
+        socket.on('gameJoined', (data) => {
+            loginScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            roomDisplay.innerText = "CODE: " + data.code;
         });
 
-        socket.on('newRound', (data) => {
-            // Reset UI for new round
-            startBtn.classList.add('hidden');
-            memeDisplay.src = data.memeUrl;
-            memeDisplay.classList.remove('hidden');
-            tableArea.classList.remove('hidden');
-            tableCards.innerHTML = ''; // Clear table
-            
-            // Determine Role
-            amIJudge = (data.judgeId === myId);
-            
-            if(amIJudge) {
-                roleInd.innerText = "ROLE: JUDGE ⚖️";
-                roleInd.style.color = "red";
-                statusMsg.innerText = "Waiting for students to submit cards...";
-                handContainer.classList.add('hidden'); 
-            } else {
-                roleInd.innerText = "ROLE: PLAYER 🤡";
-                roleInd.style.color = "green";
-                statusMsg.innerText = "Pick a card to match the meme!";
-                handContainer.classList.remove('hidden');
-            }
+        socket.on('updatePlayerList', (players) => {
+            document.getElementById('player-list').innerHTML = players.map(p => `<li><b>${p.name}</b>: ${p.score}</li>`).join('');
         });
 
         socket.on('yourHand', (cards) => {
@@ -190,7 +151,27 @@
             });
         });
 
-        // SHOW FACE DOWN CARDS
+        socket.on('newRound', (data) => {
+            startBtn.classList.add('hidden');
+            memeDisplay.src = data.memeUrl;
+            memeDisplay.classList.remove('hidden');
+            document.getElementById('table-area').classList.remove('hidden');
+            tableCards.innerHTML = '';
+            
+            amIJudge = (data.judgeId === myId);
+            if(amIJudge) {
+                roleInd.innerText = "ROLE: JUDGE ⚖️";
+                roleInd.style.color = "red";
+                statusMsg.innerText = "Waiting for submissions...";
+                document.getElementById('hand-container').classList.add('hidden');
+            } else {
+                roleInd.innerText = "ROLE: PLAYER 🤡";
+                roleInd.style.color = "green";
+                statusMsg.innerText = "Pick a card!";
+                document.getElementById('hand-container').classList.remove('hidden');
+            }
+        });
+
         socket.on('cardPlayedAnonymously', (count) => {
             tableCards.innerHTML = '';
             for(let i=0; i<count; i++) {
@@ -198,22 +179,17 @@
                 c.className = 'card card-facedown';
                 tableCards.appendChild(c);
             }
-            if(amIJudge) statusMsg.innerText = `Waiting... (${count} cards submitted)`;
-            else statusMsg.innerText = `Waiting for others... (${count} cards submitted)`;
         });
 
-        // REVEAL CARDS (Judge can click)
         socket.on('revealCards', (submissions) => {
             tableCards.innerHTML = '';
-            statusMsg.innerText = amIJudge ? "Pick the winner!" : "The Judge is choosing...";
-            
+            statusMsg.innerText = amIJudge ? "Pick the winner!" : "Judge is choosing...";
             submissions.forEach(sub => {
                 const c = document.createElement('div');
                 c.className = 'card';
                 c.innerText = sub.text;
-                
                 if(amIJudge) {
-                    c.classList.add('selected'); // Visual hint it's clickable
+                    c.classList.add('selected');
                     c.onclick = () => socket.emit('judgeChoice', sub.playerId);
                 }
                 tableCards.appendChild(c);
@@ -223,11 +199,7 @@
         socket.on('roundWinner', (winnerName) => {
             statusMsg.innerHTML = `🏆 Winner: <b>${winnerName}</b>!`;
             startBtn.classList.remove('hidden');
-            startBtn.innerText = "Start Next Round";
-            tableArea.classList.add('hidden');
-            memeDisplay.classList.add('hidden');
         });
-
     </script>
 </body>
 </html>
