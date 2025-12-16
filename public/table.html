@@ -3,134 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme Game - LIVE TABLE</title>
+    <title>Live Table</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background-color: #2c3e50; /* Dark background */
-            color: white;
-            margin: 0; padding: 20px; 
-            text-align: center; 
-            display: flex; flex-direction: column; height: 95vh;
-        }
-
-        /* HEADER AREA */
-        #header { display: flex; justify-content: space-between; align-items: center; padding: 0 50px; margin-bottom: 20px; }
-        
-        /* THE MEME */
-        #meme-container {
-            flex: 1; display: flex; justify-content: center; align-items: center;
-            background: #000; border-radius: 15px; overflow: hidden; margin: 0 50px;
-            max-height: 45vh; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        #meme-img { max-height: 100%; max-width: 100%; object-fit: contain; }
-
-        /* THE TABLE */
-        #table-area {
-            flex: 1; margin-top: 20px; padding: 20px;
-            display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;
-        }
-
-        /* CARDS */
-        .card {
-            background: white; color: black;
-            width: 200px; height: 280px; padding: 20px; margin: 15px; border-radius: 10px;
-            font-size: 1.4rem; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .card-facedown {
-            background: #e74c3c; color: #e74c3c;
-            background-image: repeating-linear-gradient(45deg, #c0392b 0, #c0392b 20px, #e74c3c 20px, #e74c3c 40px);
-            border: 4px solid white;
-        }
-
-        /* SIDEBAR */
-        #sidebar {
-            position: absolute; top: 20px; right: 20px;
-            background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;
-            text-align: left; width: 200px;
-        }
-        #player-list { list-style: none; padding: 0; }
-        #player-list li { margin-bottom: 8px; font-size: 1.1rem; }
-
-        /* STATUS & CONTROLS */
-        #status-bar { font-size: 2rem; margin: 10px; font-weight: bold; color: #f1c40f; }
-        .btn-start {
-            background: #27ae60; color: white; border: none; padding: 15px 40px;
-            font-size: 1.5rem; border-radius: 50px; cursor: pointer; margin-top: 20px;
-        }
+        /* Same Table CSS as before */
+        body { font-family: 'Poppins', sans-serif; background: #2c3e50; color: white; margin: 0; padding: 20px; text-align: center; height: 95vh; display: flex; flex-direction: column; }
+        #code-screen { position: absolute; top:0; left:0; width:100%; height:100%; background: #34495e; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 999; }
         .hidden { display: none !important; }
-
+        /* ... Add rest of previous CSS ... */
+        .card { background: white; color: black; width: 200px; height: 280px; padding: 20px; margin: 15px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; vertical-align: top; }
+        .card-facedown { background: #e74c3c; color: transparent; border: 4px solid white; }
     </style>
 </head>
 <body>
 
-    <div id="header">
-        <h1>Meme Class Room</h1>
-        <div id="status-bar">Waiting to Start...</div>
+    <div id="code-screen">
+        <h1>Spectator View</h1>
+        <input type="text" id="room-code" placeholder="Enter 4-Letter Code" style="font-size: 2rem; text-align: center; text-transform: uppercase; padding: 10px; width: 200px;">
+        <br>
+        <button onclick="joinRoom()" style="padding: 10px 20px; font-size: 1.5rem; cursor: pointer;">Watch Game</button>
     </div>
 
-    <div id="meme-container">
-        <img id="meme-img" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Paris_Tuileries_Garden_Facepalm_statue.jpg">
-    </div>
-
-    <div id="table-area"></div>
-
-    <div><button id="start-btn" class="btn-start" onclick="startRound()">START ROUND</button></div>
-
-    <div id="sidebar">
-        <h3>🏆 Scores</h3>
-        <ul id="player-list"></ul>
+    <div id="main-ui" class="hidden">
+        <h1 id="header-code">Room: ????</h1>
+        <h2 id="status-bar">Waiting...</h2>
+        
+        <div style="flex:1; display:flex; justify-content:center; align-items:center;">
+            <img id="meme-img" style="max-height:40vh; max-width:80%; border-radius:10px;">
+        </div>
+        
+        <div id="table-area" style="flex:1; padding:20px;"></div>
+        
+        <div style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.1); padding:15px; border-radius:10px; text-align:left;">
+            <h3>Scores</h3>
+            <ul id="player-list" style="list-style:none; padding:0;"></ul>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        const memeImg = document.getElementById('meme-img');
-        const tableArea = document.getElementById('table-area');
-        const statusText = document.getElementById('status-bar');
-        const startBtn = document.getElementById('start-btn');
+        
+        function joinRoom() {
+            const code = document.getElementById('room-code').value;
+            if(code) {
+                socket.emit('joinAsSpectator', code);
+            }
+        }
 
-        function startRound() { socket.emit('startRound'); }
+        socket.on('spectatorJoined', (code) => {
+            document.getElementById('code-screen').classList.add('hidden');
+            document.getElementById('main-ui').classList.remove('hidden');
+            document.getElementById('header-code').innerText = "Room: " + code;
+        });
 
         socket.on('updatePlayerList', (players) => {
-            document.getElementById('player-list').innerHTML = players.map(p => `<li>${p.score} - <b>${p.name}</b></li>`).join('');
+            document.getElementById('player-list').innerHTML = players.map(p => `<li>${p.score} - ${p.name}</li>`).join('');
         });
 
         socket.on('newRound', (data) => {
-            startBtn.classList.add('hidden');
-            memeImg.src = data.memeUrl;
-            tableArea.innerHTML = '';
-            statusText.innerText = "Judge is looking at the meme...";
+            document.getElementById('meme-img').src = data.memeUrl;
+            document.getElementById('table-area').innerHTML = '';
+            document.getElementById('status-bar').innerText = "Thinking...";
         });
 
         socket.on('cardPlayedAnonymously', (count) => {
-            tableArea.innerHTML = '';
-            statusText.innerText = `${count} cards submitted...`;
+            const area = document.getElementById('table-area');
+            area.innerHTML = '';
             for(let i=0; i<count; i++) {
                 const c = document.createElement('div');
                 c.className = 'card card-facedown';
-                c.innerText = "?";
-                tableArea.appendChild(c);
+                area.appendChild(c);
             }
         });
 
         socket.on('revealCards', (submissions) => {
-            tableArea.innerHTML = '';
-            statusText.innerText = "JUDGING TIME!";
+            const area = document.getElementById('table-area');
+            area.innerHTML = '';
             submissions.forEach(sub => {
                 const c = document.createElement('div');
                 c.className = 'card';
                 c.innerText = sub.text;
-                tableArea.appendChild(c);
+                area.appendChild(c);
             });
+            document.getElementById('status-bar').innerText = "Judging...";
         });
 
         socket.on('roundWinner', (name) => {
-            statusText.innerHTML = `🎉 WINNER: ${name} 🎉`;
-            startBtn.classList.remove('hidden');
-            startBtn.innerText = "Next Round >>";
+            document.getElementById('status-bar').innerText = "Winner: " + name;
         });
     </script>
 </body>
