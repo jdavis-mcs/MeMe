@@ -2,79 +2,244 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Meme Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Keep your existing CSS */
-        body { font-family: 'Poppins', sans-serif; background-color: #f0f2f5; padding: 20px; text-align: center; margin: 0; }
+        /* --- GAME AESTHETICS --- */
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #ffffff;
+            --accent-color: #e94560; /* Neon Red */
+            --primary-btn: #0f3460; /* Dark Blue */
+            --highlight: #ffd700;   /* Gold */
+            --text-color: #ffffff;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            margin: 0; 
+            padding: 20px; 
+            text-align: center; 
+            touch-action: manipulation; /* Improves touch response */
+        }
+
+        h1, h2, h3 { margin: 0.5em 0; text-shadow: 2px 2px 0px rgba(0,0,0,0.5); }
         .hidden { display: none !important; }
-        .btn { background: #4a90e2; color: white; border: none; padding: 10px 20px; font-size: 1.2rem; cursor: pointer; border-radius: 5px; margin: 5px; }
-        .btn-start { background: #28a745; font-weight: bold; padding: 15px 30px; margin: 20px auto; display: block; }
-        #login-screen, #game-screen { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .card { background: white; border: 2px solid #ddd; padding: 15px; margin: 10px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 160px; height: 220px; vertical-align: top; font-size: 0.95rem; user-select: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card:hover { transform: translateY(-5px); border-color: #4a90e2; }
-        .card.selected { background-color: #d1e7dd; border-color: #0f5132; }
-        .card-facedown { background: #ccc; color: transparent; background-image: repeating-linear-gradient(45deg, #ccc 0, #ccc 10px, #bbb 10px, #bbb 20px); }
-        #meme-display { max-width: 100%; height: 350px; object-fit: contain; background: #333; margin: 20px 0; border-radius: 5px; }
-        #confirm-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:1000; }
+
+        /* --- CONTAINERS --- */
+        #login-screen, #game-screen {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05); /* Glass effect */
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- INPUTS & BUTTONS --- */
+        input {
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            border: none;
+            width: 80%;
+            margin: 10px 0;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn {
+            background: linear-gradient(145deg, #4e54c8, #8f94fb);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            box-shadow: 0 6px 0 #3a3f99; /* 3D effect */
+            transition: all 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+        .btn-start {
+            background: linear-gradient(145deg, #11998e, #38ef7d);
+            box-shadow: 0 6px 0 #0b665e;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: var(--card-bg);
+            color: #222;
+            width: 140px;
+            height: 200px;
+            padding: 15px;
+            margin: 8px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            vertical-align: top;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+            border: 4px solid transparent;
+        }
+        .card:hover { transform: translateY(-10px) rotate(2deg); }
+        .card:active { transform: scale(0.95); }
         
-        /* NEW: Room Code Display */
-        #room-code-display { font-size: 2rem; font-weight: bold; color: #6c5ce7; letter-spacing: 5px; margin: 10px 0; }
+        .card.selected { 
+            border-color: var(--accent-color); 
+            background: #fff0f3;
+            transform: scale(1.05);
+        }
+
+        /* Face Down Card Pattern */
+        .card-facedown {
+            background: #222;
+            border: 2px solid #444;
+            background-image: radial-gradient(#444 15%, transparent 16%), radial-gradient(#444 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+
+        /* --- GAME UI ELEMENTS --- */
+        #room-code-display {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--highlight);
+            letter-spacing: 5px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        #role-indicator {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+        .role-judge { background: var(--accent-color); color: white; }
+        .role-player { background: #38ef7d; color: #0f3460; }
+
+        #meme-display {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 4px solid white;
+            background: black;
+            margin-bottom: 20px;
+        }
+
+        /* Scrollable Hand for Mobile */
+        #my-hand {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px 5px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            white-space: nowrap;
+        }
+        /* Hide scrollbar for cleaner look */
+        #my-hand::-webkit-scrollbar { display: none; }
+
+        #scores {
+            margin-top: 30px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: left;
+        }
+        #player-list li { margin: 8px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+
+        /* --- MODAL --- */
+        #confirm-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white; color: black;
+            padding: 30px; border-radius: 20px;
+            width: 90%; max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.2);
+        }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <h1>Meme Game</h1>
-        <input type="text" id="username" placeholder="Your Name" style="padding:10px; font-size:1.2rem; width: 60%; display:block; margin: 10px auto;">
+        <h1 style="font-size: 3rem; color: var(--highlight);">MEME<br>CLASS</h1>
+        <p>Enter your nickname to join</p>
+        <input type="text" id="username" placeholder="Nickname">
         
-        <hr style="width: 50%; margin: 20px auto;">
-        
-        <div>
-            <input type="text" id="room-code-input" placeholder="Room Code (e.g. ABCD)" style="padding:10px; font-size:1rem; width: 40%; text-transform: uppercase;">
+        <div style="margin-top: 30px;">
+            <input type="text" id="room-code-input" placeholder="Room Code (e.g. ABCD)" style="text-transform: uppercase; width: 60%;">
             <button class="btn" onclick="joinGame()">Join Room</button>
         </div>
         
-        <p>— OR —</p>
+        <p style="opacity: 0.5;">— or —</p>
         
-        <button class="btn" style="background: #e17055;" onclick="createGame()">Create New Room</button>
-        <p id="error-msg" style="color: red;"></p>
+        <button class="btn" style="background: linear-gradient(145deg, #e17055, #fab1a0); box-shadow: 0 6px 0 #b33925;" onclick="createGame()">Create New Room</button>
+        <p id="error-msg" style="color: #ff6b6b; font-weight: bold;"></p>
     </div>
 
     <div id="game-screen" class="hidden">
-        <div id="room-code-display">CODE: ????</div>
-        <div id="info-bar">
-            <span id="role-indicator">Waiting...</span>
-        </div>
+        <div id="room-code-display">ABCD</div>
+        <div id="role-indicator" class="role-player">Waiting...</div>
 
         <button id="start-btn" class="btn btn-start" onclick="startGame()">START ROUND</button>
 
         <img id="meme-display" class="hidden">
-        <h2 id="status-message">Waiting for players...</h2>
+        <h2 id="status-message" style="color: #a8a8a8;">Waiting for players...</h2>
 
         <div id="table-area" class="hidden">
-            <h3>The Table</h3>
-            <div id="table-cards"></div>
+            <h3>THE TABLE</h3>
+            <div id="table-cards" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
         </div>
 
         <div id="hand-container" class="hidden">
-            <h3>Your Hand</h3>
+            <h3>YOUR HAND</h3>
             <div id="my-hand"></div>
         </div>
         
         <div id="scores">
-            <h3>Scores</h3>
-            <ul id="player-list"></ul>
+            <h3>🏆 Leaderboard</h3>
+            <ul id="player-list" style="list-style: none; padding: 0;"></ul>
         </div>
     </div>
 
     <div id="confirm-modal" class="hidden">
-        <div style="background:white; padding:30px; border-radius:10px; text-align:center; max-width:400px; width:90%;">
-            <h3>Confirm Card</h3>
-            <div id="selected-card-text" style="background:#eee; padding:15px; margin:15px 0; font-weight:bold;">...</div>
-            <button class="btn" style="background:#dc3545;" onclick="closeModal()">Cancel</button>
-            <button class="btn" style="background:#28a745;" onclick="confirmPlayCard()">Play It!</button>
+        <div class="modal-content">
+            <h3>Are you sure?</h3>
+            <div id="selected-card-text" style="background:#eee; padding:20px; margin:20px 0; font-weight:bold; border-radius:10px; font-size: 1.1rem;">...</div>
+            <div style="display:flex; gap: 10px;">
+                <button class="btn" style="background: #ccc; color: #333; box-shadow: none;" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-start" style="margin:0;" onclick="confirmPlayCard()">PLAY IT</button>
+            </div>
         </div>
     </div>
 
@@ -85,7 +250,6 @@
         let amIJudge = false;
         let tempCardText = "";
 
-        // Elements
         const loginScreen = document.getElementById('login-screen');
         const gameScreen = document.getElementById('game-screen');
         const startBtn = document.getElementById('start-btn');
@@ -127,11 +291,11 @@
         socket.on('gameJoined', (data) => {
             loginScreen.classList.add('hidden');
             gameScreen.classList.remove('hidden');
-            roomDisplay.innerText = "CODE: " + data.code;
+            roomDisplay.innerText = data.code;
         });
 
         socket.on('updatePlayerList', (players) => {
-            document.getElementById('player-list').innerHTML = players.map(p => `<li><b>${p.name}</b>: ${p.score}</li>`).join('');
+            document.getElementById('player-list').innerHTML = players.map(p => `<li><b>${p.name}</b> <span style="float:right;">${p.score} pts</span></li>`).join('');
         });
 
         socket.on('yourHand', (cards) => {
@@ -160,13 +324,13 @@
             
             amIJudge = (data.judgeId === myId);
             if(amIJudge) {
-                roleInd.innerText = "ROLE: JUDGE ⚖️";
-                roleInd.style.color = "red";
+                roleInd.innerText = "YOU ARE THE JUDGE ⚖️";
+                roleInd.className = "role-judge";
                 statusMsg.innerText = "Waiting for submissions...";
                 document.getElementById('hand-container').classList.add('hidden');
             } else {
-                roleInd.innerText = "ROLE: PLAYER 🤡";
-                roleInd.style.color = "green";
+                roleInd.innerText = "PLAYER 🤡";
+                roleInd.className = "role-player";
                 statusMsg.innerText = "Pick a card!";
                 document.getElementById('hand-container').classList.remove('hidden');
             }
@@ -197,7 +361,7 @@
         });
 
         socket.on('roundWinner', (winnerName) => {
-            statusMsg.innerHTML = `🏆 Winner: <b>${winnerName}</b>!`;
+            statusMsg.innerHTML = `🏆 Winner: <span style="color:var(--highlight);">${winnerName}</span>!`;
             startBtn.classList.remove('hidden');
         });
     </script>
