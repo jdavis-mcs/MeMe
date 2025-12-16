@@ -191,10 +191,29 @@
             text-align: center;
             box-shadow: 0 0 50px rgba(255,255,255,0.2);
         }
+        /* --- GAME OVER OVERLAY --- */
+        #game-over-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 52, 96, 0.95); /* Dark Blue overlay */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-
+    
+    <div id="game-over-screen" class="hidden">
+        <h1 style="font-size: 4rem; margin-bottom: 0;">👑</h1>
+        <h1>GAME OVER!</h1>
+        <h2 style="color: #ffd700;">WINNER:</h2>
+        <h1 id="final-winner-name" style="font-size: 3rem; color: #fff; text-shadow: 0 0 20px #e94560;"></h1>
+        <br>
+        <button class="btn btn-start" onclick="resetClient()">PLAY AGAIN</button>
+    </div>
+    
     <div id="login-screen">
         <h1 style="font-size: 3rem; color: var(--highlight);">MEME<br>CLASS</h1>
         <p>Enter your nickname to join</p>
@@ -368,7 +387,28 @@
             statusMsg.innerHTML = `🏆 Winner: <span style="color:var(--highlight);">${winnerName}</span>!`;
             startBtn.classList.remove('hidden');
         });
+        socket.on('gameGameOver', (winnerName) => {
+            // Hide game UI
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('confirm-modal').classList.add('hidden');
+            
+            // Show Game Over UI
+            const goScreen = document.getElementById('game-over-screen');
+            goScreen.classList.remove('hidden');
+            document.getElementById('final-winner-name').innerText = winnerName;
+        });
+
+        function resetClient() {
+            // Hide Game Over screen
+            document.getElementById('game-over-screen').classList.add('hidden');
+            // Show Game Screen again
+            document.getElementById('game-screen').classList.remove('hidden');
+            // Reset text
+            document.getElementById('status-message').innerText = "Waiting for next round...";
+            document.getElementById('start-btn').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
+
 
