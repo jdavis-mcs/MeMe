@@ -79,6 +79,7 @@
         }
 
         /* --- CARDS --- */
+        /* --- CARDS --- */
         .card {
             background: var(--card-bg);
             color: #222;
@@ -98,6 +99,9 @@
             transition: transform 0.2s;
             user-select: none;
             border: 4px solid transparent;
+            white-space: normal;       /* Resets text wrapping so it doesn't inherit 'nowrap' */
+            overflow-wrap: break-word; /* Prevents long words from spilling out */
+            text-align: center;        /* Centers the text nicely */
         }
         .card:hover { transform: translateY(-10px) rotate(2deg); }
         .card:active { transform: scale(0.95); }
@@ -367,3 +371,4 @@
     </script>
 </body>
 </html>
+
