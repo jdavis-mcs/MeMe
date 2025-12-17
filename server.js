@@ -261,26 +261,42 @@ io.on('connection', (socket) => {
     });
 
     // 3. START ROUND
-    socket.on('startRound', () => {
-        const code = socket.data.roomCode;
-        const room = rooms[code];
-        if (!room) return;
+    socket.on('start_round', ({ roomCode }) => {
+    const room = rooms[roomCode];
 
-        room.submissions = [];
-        
-        // Rotate Judge
-        if (room.currentJudgeIndex >= room.players.length) room.currentJudgeIndex = 0;
-        const judge = room.players[room.currentJudgeIndex];
-        
-        room.currentMeme = memeImages[Math.floor(Math.random() * memeImages.length)];
+    if (!room) return;
 
-        io.to(code).emit('newRound', {
-            judgeId: judge.id,
-            memeUrl: room.currentMeme
-        });
+    // --- SECURITY FIX: Only allow the Judge to start ---
+    if (socket.id !== room.judgeId) {
+        console.warn(`Unauthorized attempt to start round by ${socket.id}`);
+        return; 
+    }
 
-        room.currentJudgeIndex = (room.currentJudgeIndex + 1) % room.players.length;
+    // --- LOGIC: Setup the new round ---
+    // (Your existing logic to pick a prompt, clear submissions, etc. goes here)
+    // room.state = 'playing';
+    // room.currentPrompt = getRandomPrompt();
+    // room.submissions = [];
+
+    // --- BUG FIX: Sync hands for every player ---
+    room.players.forEach(player => {
+        // 1. Refill their hand to 7 cards (or your max hand size)
+        while (player.hand.length < 7) {
+            // Replace 'getRandomCard()' with your actual card drawing function
+            const newCard = getRandomCard(); 
+            player.hand.push(newCard);
+        }
+
+        // 2. FORCE UPDATE: Send the specific hand to this specific player
+        io.to(player.socketId).emit('update_hand', player.hand);
     });
+
+    // --- NOTIFY: Tell everyone the round has started ---
+    io.in(roomCode).emit('round_started', {
+        judgeId: room.judgeId,
+        currentPrompt: room.currentPrompt
+    });
+});
 
     // 4. PLAY CARD
     socket.on('playCard', (cardText) => {
@@ -372,4 +388,5 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
 
