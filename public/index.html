@@ -308,20 +308,6 @@
             }
         }
 
-        {/* Only show the Start button if I am the Judge */}
-{socket.id === judgeId ? (
-    <button 
-        className="btn-start-round" 
-        onClick={() => socket.emit('start_round', { roomCode })}
-    >
-        Start Round
-    </button>
-) : (
-    <div className="status-message">
-        Waiting for the Judge to start the round...
-    </div>
-)}
-        
         socket.on('connect', () => { myId = socket.id; });
         socket.on('errorMsg', (msg) => { alert(msg); });
 
@@ -351,19 +337,6 @@
                 myHand.appendChild(c);
             });
         });
-
-        // Add this inside your main Game component
-useEffect(() => {
-    // Listener for forced hand updates
-    socket.on('update_hand', (newHand) => {
-        console.log("Hand updated from server:", newHand);
-        setHand(newHand); // Update your hand state
-    });
-
-    return () => {
-        socket.off('update_hand');
-    };
-}, [socket]);
 
         socket.on('newRound', (data) => {
             startBtn.classList.add('hidden');
@@ -437,6 +410,4 @@ useEffect(() => {
     </script>
 </body>
 </html>
-
-
 
